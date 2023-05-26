@@ -9,7 +9,7 @@ app.post("/products", logics.createProduct);
 
 app.get("/products", logics.getProducts);
 
-app.get("/products/:productId", logics.getProducts);
+app.get("/products/:productId", logics.getProductsById);
 
 const PORT: number = 3000;
 const msg = `Server is running on http://localhost:${PORT}`;
