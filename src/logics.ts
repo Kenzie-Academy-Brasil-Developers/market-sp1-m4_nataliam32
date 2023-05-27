@@ -5,13 +5,24 @@ import  market from "./database"
 const createProduct = (req: Request, res: Response): Response => {
     const payload: TProductCreate[] = req.body;
 
-    const newProduct = payload.map((product) => {
+    let productId = 0;
+    market.forEach((product) => {
+        if(product.id > productId){
+            productId = product.id
+        }
+    })
+
+//    const productId = market.sort((a, b) => b.id - a.id);
+//    const finalId = productId[0].id + 1
+
+    const newProduct: IProduct[] | undefined = payload.map((product) => {
       const createdProduct: IProduct | IFoodProduct | TCleaningProduct = {
-        id: market.length + 1,
+        id: productId + 1,
         ...product,
         expirationDate: new Date(),
       };
       market.push(createdProduct);
+      productId++;
       return createdProduct;
     });
   
