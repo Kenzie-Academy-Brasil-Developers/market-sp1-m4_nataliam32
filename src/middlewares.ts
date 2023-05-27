@@ -20,3 +20,5 @@ const verifyIfNameExists = (req: Request, res: Response, next: NextFunction): Re
     
     return next();
 }
+
+export default { verifyIfNameExists }

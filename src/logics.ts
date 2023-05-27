@@ -18,7 +18,6 @@ const createProduct = (req: Request, res: Response): Response => {
     return res.status(201).json(newProduct);
   };
   
-
 const getProducts = (req: Request, res: Response): Response => {
     const total: number = market.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.price
@@ -40,7 +39,8 @@ const getProducts = (req: Request, res: Response): Response => {
 const getProductsById = (req: Request, res: Response): Response => {
     const { productId } = req.params;
 
-    const foundProduct = market.find((value) => value.id === parseInt(productId));
+    const foundProduct: IProduct | undefined = market.find((value) => value.id === parseInt(productId));
+
     if(!foundProduct) {
         const error: string = "Product not found";
         return res.status(404).json({ error })
@@ -48,4 +48,19 @@ const getProductsById = (req: Request, res: Response): Response => {
     return res.json(foundProduct);
 }
 
-export default { createProduct, getProducts, getProductsById }
+const deleteProductsById = (req: Request, res: Response): Response => {
+    const { productId } = req.params;
+
+    const productIndex: number = market.findIndex((val): boolean => val.id === Number(productId));
+
+    if(productIndex === -1) {
+        const error: string = "Product not found";
+        return res.status(404).json({ error })
+    }
+
+    market.splice(productIndex, 1);
+    
+    return res.status(204).json();
+}
+
+export default { createProduct, getProducts, getProductsById, deleteProductsById }
