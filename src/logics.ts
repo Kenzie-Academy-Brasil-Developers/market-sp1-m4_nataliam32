@@ -10,10 +10,7 @@ const createProduct = (req: Request, res: Response): Response => {
         if(product.id > productId){
             productId = product.id
         }
-    })
-
-//    const productId = market.sort((a, b) => b.id - a.id);
-//    const finalId = productId[0].id + 1
+    });
 
     const newProduct: IProduct[] | undefined = payload.map((product) => {
       const createdProduct: IProduct | IFoodProduct | TCleaningProduct = {
@@ -48,30 +45,32 @@ const getProducts = (req: Request, res: Response): Response => {
 }
 
 const getProductsById = (req: Request, res: Response): Response => {
-    const { productId } = req.params;
 
-    const foundProduct: IProduct | undefined = market.find((value) => value.id === parseInt(productId));
-
-    if(!foundProduct) {
-        const error: string = "Product not found";
-        return res.status(404).json({ error })
-    }
+    const foundProduct = res.locals.productId;
     return res.json(foundProduct);
 }
 
+const updateProductsById = (req: Request, res: Response): Response => {
+    
+    const payload: TProductCreate[] = req.body;
+
+    const productIndex = res.locals.productId;
+
+    const updateProduct: TProductCreate[] = (market[productIndex] = {
+        ...market[productIndex],
+        ...payload
+    });
+
+    return res.status(200).json(updateProduct);
+}
+
 const deleteProductsById = (req: Request, res: Response): Response => {
-    const { productId } = req.params;
 
-    const productIndex: number = market.findIndex((val): boolean => val.id === Number(productId));
-
-    if(productIndex === -1) {
-        const error: string = "Product not found";
-        return res.status(404).json({ error })
-    }
+    const productIndex = res.locals.productId;
 
     market.splice(productIndex, 1);
     
     return res.status(204).json();
 }
 
-export default { createProduct, getProducts, getProductsById, deleteProductsById }
+export default { createProduct, getProducts, getProductsById, updateProductsById, deleteProductsById }

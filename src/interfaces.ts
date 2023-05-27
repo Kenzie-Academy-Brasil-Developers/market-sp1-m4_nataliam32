@@ -2,7 +2,7 @@ interface IProduct {
     id: number;
     name: string;
     price: number;
-    wheight: number;
+    weight: number;
     section: "food" | "cleaning";
     expirationDate: Date;
 };
