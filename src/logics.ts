@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IFoodProduct, IProduct, TCleaningProduct, TProductCreate } from "./interfaces"
+import { ICleaningProduct, IFoodProduct, IProduct, TProductCreate } from "./interfaces"
 import  market from "./database"
 
 const createProduct = (req: Request, res: Response): Response => {
@@ -13,7 +13,7 @@ const createProduct = (req: Request, res: Response): Response => {
     });
 
     const newProduct: IProduct[] | undefined = payload.map((product) => {
-      const createdProduct: IProduct | IFoodProduct | TCleaningProduct = {
+      const createdProduct: IProduct | ICleaningProduct | IFoodProduct = {
         id: productId + 1,
         ...product,
         expirationDate: new Date(),

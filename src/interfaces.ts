@@ -7,7 +7,7 @@ interface IProduct {
     expirationDate: Date;
 };
 
-type TCleaningProduct = IProduct;
+interface ICleaningProduct extends IProduct {};
 
 interface IFoodProduct extends IProduct {
     calories: number;
@@ -16,4 +16,4 @@ interface IFoodProduct extends IProduct {
 type TProductCreate = Omit<IProduct, "id" | "expirationDate">;
 type TProductUpdate = Partial<TProductCreate>
 
-export { IProduct, TCleaningProduct, IFoodProduct, TProductCreate, TProductUpdate };
+export { IProduct, IFoodProduct, TProductCreate, TProductUpdate, ICleaningProduct };
