@@ -22,8 +22,22 @@ const createProduct = (req: Request, res: Response): Response => {
       productId++;
       return createdProduct;
     });
+
+    const total: number = newProduct.reduce((accumulator, currentValue) => {
+        return accumulator + currentValue.price;
+    }, 0);
+
+    interface IProductRes {
+        total: number,
+        marketProducts: IProduct[]
+    }
+
+    const productResponse: IProductRes = {
+        total: total,
+        marketProducts: market
+    }
   
-    return res.status(201).json(newProduct);
+    return res.status(201).json(productResponse);
   };
   
 const getProducts = (req: Request, res: Response): Response => {
