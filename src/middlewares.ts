@@ -1,6 +1,6 @@
 import {  NextFunction, Request, Response } from "express";
 import market from "./database";
-import { IProduct, TProductCreate } from "./interfaces";
+import { IProduct, TProductCreate, TProductUpdate } from "./interfaces";
 
 const verifyIfNameExists = (req: Request, res: Response, next: NextFunction): Response | void => {
     const payload: TProductCreate[] = req.body;
@@ -21,21 +21,31 @@ const verifyIfNameExists = (req: Request, res: Response, next: NextFunction): Re
     return next();
 }
 
-const verifyIfIdGet = (req: Request, res: Response, next: NextFunction): Response | void => {
-    const { productId } = req.params;
+const verifyIfNameExistsPatch = (req: Request, res: Response, next: NextFunction): Response | void => {
+  const productName = req.params.productName;
+  
+  const foundProduct = market.find((product) => product.name === productName)
 
+  if(foundProduct) {
+    return res.status(409).json({ error: 'Product already exists.'})
+  }
+
+  return next();
+}
+
+const verifyIfIdExists = (req: Request, res: Response, next: NextFunction): Response | void => {
+  const { productId } = req.params;
+
+  if(req.method === "GET") {
     const foundProduct: IProduct | undefined = market.find((value) => value.id === parseInt(productId));
 
     if(!foundProduct) {
-        const error: string = "Product not found";
-        return res.status(404).json({ error })
-    }
+      const error: string = "Product not found";
+      return res.status(404).json({ error })
+  }
     res.locals.productId = foundProduct;
 
-    return next();
-}
-
-const verifyIfIPatchAndDelete = (req: Request, res: Response, next: NextFunction): Response | void => {
+  } else if(req.method === "PATCH" || "DELETE") {
     const { productId } = req.params;
 
     const productIndex: number = market.findIndex((val): boolean => val.id === Number(productId));
@@ -48,6 +58,12 @@ const verifyIfIPatchAndDelete = (req: Request, res: Response, next: NextFunction
     res.locals.productId = productIndex;
 
     return next();
-} 
+  }
+  
+  
+  return next();
+}
 
-export default { verifyIfNameExists, verifyIfIdGet, verifyIfIPatchAndDelete }
+
+ 
+export default { verifyIfNameExists, verifyIfIdExists, verifyIfNameExistsPatch }

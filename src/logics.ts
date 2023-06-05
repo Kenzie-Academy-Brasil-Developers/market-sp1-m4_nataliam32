@@ -4,6 +4,9 @@ import  market from "./database"
 
 const createProduct = (req: Request, res: Response): Response => {
     const payload: TProductCreate[] = req.body;
+    const date = new Date();
+    date.setFullYear(date.getFullYear() + 1);
+    const finalDate = date.toISOString().split('T')[0];
 
     let productId = 0;
     market.forEach((product) => {
@@ -16,7 +19,7 @@ const createProduct = (req: Request, res: Response): Response => {
       const createdProduct: IProduct | ICleaningProduct | IFoodProduct = {
         id: productId + 1,
         ...product,
-        expirationDate: new Date(),
+        expirationDate: finalDate,
       };
       market.push(createdProduct);
       productId++;
@@ -67,7 +70,7 @@ const getProductsById = (req: Request, res: Response): Response => {
 const updateProductsById = (req: Request, res: Response): Response => {
     
     const payload: TProductCreate[] = req.body;
-
+    
     const productIndex = res.locals.productId;
 
     const updateProduct: TProductCreate[] = (market[productIndex] = {
